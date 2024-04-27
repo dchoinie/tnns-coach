@@ -5,7 +5,7 @@ import Logo from "../../public/logo/fulllogo_transparent_nobuffer.png";
 import TextLogo from "../../public/logo/textonly_nobuffer.png";
 import { SignInButton, SignUp } from "@clerk/nextjs";
 import { Button } from "~/components/ui/button";
-import { LogIn, Check } from "lucide-react";
+import { LogIn, Check, Info } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 
 export default function HomePage() {
@@ -26,7 +26,7 @@ export default function HomePage() {
             empowering tennis coaches to focus on what they do best - guiding
             players to victory.
           </h5>
-          <div className="mb-3 mb-6 flex gap-6">
+          <div className="mb-6 flex gap-6">
             <Badge variant="secondary">
               <Check className="mr-2 text-green-600" size={20} /> HS or college
               level
@@ -42,11 +42,11 @@ export default function HomePage() {
           <div className="flex gap-6">
             <SignInButton mode="modal">
               <Button variant="default" size="lg">
-                <LogIn size={20} className="mr-2" /> Sign In
+                Sign In <LogIn size={20} className="ml-2" />
               </Button>
             </SignInButton>
             <Button variant="outline" size="lg">
-              Learn More
+              <Info size={20} className="mr-2" /> Learn More
             </Button>
           </div>
         </div>
