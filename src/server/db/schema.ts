@@ -1,16 +1,12 @@
-// Example model schema from the Drizzle docs
-// https://orm.drizzle.team/docs/sql-schema-declaration
-
 import { sql } from "drizzle-orm";
 import {
-  index,
   pgTableCreator,
-  serial,
   timestamp,
   varchar,
   date,
   integer,
   pgEnum,
+  serial,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -47,15 +43,16 @@ export const matchTypeEnum = pgEnum("match_format", [
 ]);
 
 export const users = createTable("user", {
-  id: serial("id").primaryKey(),
-  createdAt: timestamp("created_at")
-    .default(sql`CURRENT_TIMESTAMP`)
+  id: serial("id").notNull().primaryKey(),
+  createdAt: date("created_at")
+    .default(sql`CURRENT_DATE`)
     .notNull(),
   firstName: varchar("first_name", { length: 256 }),
   lastName: varchar("last_name", { length: 256 }),
   email: varchar("email", { length: 256 }),
   phone: varchar("phone", { length: 256 }),
-  dateOfBirth: date("date_of_birth"),
+  dateOfBirth: date("date_of_birth", { mode: "string" }),
+  title: varchar("title", { length: 256 }),
   managedTeams: integer("managed_teams").references(() => teams.id),
 });
 
