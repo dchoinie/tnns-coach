@@ -25,6 +25,8 @@ export const SetupProfileComplete = async () => {
 
 export type NewUser = typeof users.$inferInsert;
 export async function CreateUser(formData: FormData) {
+  const user = auth();
+
   const newUser = {
     createdAt: new Date().toISOString(),
     firstName: formData.get("firstName") as string,
@@ -35,12 +37,24 @@ export async function CreateUser(formData: FormData) {
     phone: formData.get("phone") as string,
   };
 
+  if (!user?.userId) {
+    return { message: "No Logged In User" };
+  }
+
   try {
     await db.insert(users).values(newUser);
+    const res = await clerkClient.users.updateUser(user?.userId, {
+      publicMetadata: {
+        profileComplete: true,
+      },
+    });
     const insertedUser = await db.query.users.findFirst({
       where: (users, { eq }) => eq(users.email, newUser.email),
     });
-    return { message: "User created successfully.", newUser: insertedUser };
+    return {
+      message: "User created successfully.",
+      newUser: [insertedUser, res.publicMetadata],
+    };
   } catch (error) {
     console.log(error);
     return { error: "There was an error creating the user." };
