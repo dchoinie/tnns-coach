@@ -42,18 +42,16 @@ export async function CreateUser(formData: FormData) {
   }
 
   try {
-    await db.insert(users).values(newUser);
+    await db.insert(users).values(newUser).returning();
     const res = await clerkClient.users.updateUser(user?.userId, {
       publicMetadata: {
         profileComplete: true,
       },
     });
-    const insertedUser = await db.query.users.findFirst({
-      where: (users, { eq }) => eq(users.email, newUser.email),
-    });
+
     return {
       message: "User created successfully.",
-      newUser: [insertedUser, res.publicMetadata],
+      newUser: [res.publicMetadata],
     };
   } catch (error) {
     console.log(error);
