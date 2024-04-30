@@ -45,6 +45,7 @@ const SetupProfilePage = () => {
   return (
     <div className="my-12 flex flex-col items-center">
       <h2 className="mb-6 text-3xl">Create Your Profile</h2>
+      {error && <p className="text-red-500">{error}</p>}
       <form action={handleSubmit} className="flex w-1/2 flex-col">
         <div className="flex gap-12">
           <div className="mb-10 w-1/2">
