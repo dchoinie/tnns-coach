@@ -1,6 +1,3 @@
 .bgImg {
-    background: linear-gradient(to top right, hsl(78, 72%, 49%, 0.25), rgba(255, 255, 255, 0.8) 75%),
-    url("../../public/images//court.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
+    background: linear-gradient(125deg, rgba(255, 255, 255, 1) 0%, rgba(37, 201, 62, 0.8) 100%);
 }

@@ -8,6 +8,8 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false; /* eslint-disable import/first */
 import styles from "../styles/loading.module.css";
 import { Inter } from "next/font/google";
+import MarketingHeader from "./_components/marketingHeader";
+import MarketingFooter from "./_components/marketingFooter";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,7 +36,11 @@ export default function RootLayout({
               <span className={styles.loader}>Load&nbsp;ng</span>
             </div>
           </ClerkLoading>
-          <ClerkLoaded>{children}</ClerkLoaded>
+          <ClerkLoaded>
+            <MarketingHeader />
+            {children}
+            <MarketingFooter />
+          </ClerkLoaded>
         </body>
       </html>
     </ClerkProvider>
