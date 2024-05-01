@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 const setupProfileLayout = ({ children }: { children: React.ReactNode }) => {
   if (auth().sessionClaims?.metadata.profileComplete === true) {
-    redirect("/dashboard");
+    redirect("/create-organization");
   }
 
   return (

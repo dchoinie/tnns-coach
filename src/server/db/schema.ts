@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   pgTableCreator,
   timestamp,
@@ -7,6 +7,9 @@ import {
   integer,
   pgEnum,
   serial,
+  pgTable,
+  primaryKey,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -16,8 +19,6 @@ import {
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const createTable = pgTableCreator((name) => `tnns-coach_${name}`);
-
-export const genderEnum = pgEnum("gender", ["male", "female"]);
 export const resultEnum = pgEnum("result", ["win", "loss", "tie"]);
 export const positionEnum = pgEnum("position", [
   "1_singles",
@@ -37,6 +38,8 @@ export const matchTypeEnum = pgEnum("match_format", [
   "college_DI",
   "college_DII",
   "college_DIII",
+  "college_NAIA",
+  "junior_college",
   "hs_junior_varsity",
   "middle_school",
   "custom",
@@ -53,17 +56,40 @@ export const users = createTable("user", {
   phone: varchar("phone", { length: 256 }),
   dateOfBirth: date("date_of_birth", { mode: "string" }),
   title: varchar("title", { length: 256 }),
-  managedTeams: integer("managed_teams").references(() => teams.id),
+  profileCompleted: boolean("profile_completed"),
+  organizationCompleted: boolean("organization_completed"),
 });
 
+export const usersRelations = relations(users, ({ many }) => ({
+  usersToTeams: many(teams),
+}));
+
 export const teams = createTable("team", {
-  id: serial("id").primaryKey(),
+  id: serial("id").notNull().primaryKey(),
   schoolName: varchar("school_name", { length: 256 }),
   schoolMascot: varchar("school_mascot", { length: 256 }),
-  gender: genderEnum("gender"),
+  gender: varchar("gender", { length: 6, enum: ["male", "female"] }),
   conference: varchar("conference", { length: 256 }),
   division: varchar("division", { length: 256 }),
+  class: varchar("class", { length: 256 }),
+  section: varchar("section", { length: 256 }),
 });
+
+export const teamsRelations = relations(teams, ({ many }) => ({
+  usersToTeams: many(usersToTeams),
+  players: many(players),
+}));
+
+export const usersToTeams = pgTable(
+  "users_to_teams",
+  {
+    userId: integer("user_id").references(() => users.id),
+    teamId: integer("team_id").references(() => teams.id),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.teamId] }),
+  }),
+);
 
 export const players = createTable("player", {
   id: serial("id").primaryKey(),
@@ -74,10 +100,18 @@ export const players = createTable("player", {
   lastName: varchar("last_name", { length: 256 }),
   nickname: varchar("nickname", { length: 256 }),
   dateOfBirth: date("date_of_birth"),
-  gender: genderEnum("gender"),
+  gender: varchar("gender", { length: 6, enum: ["male", "female"] }),
   utrRating: integer("utr_rating"),
+  status: varchar("status", { length: 8, enum: ["active", "inactive"] }),
   teamId: integer("team_id").references(() => teams.id),
 });
+
+export const playersRelations = relations(players, ({ one }) => ({
+  teams: one(teams, {
+    fields: [players.teamId],
+    references: [teams.id],
+  }),
+}));
 
 export const teamMatches = createTable("team_match", {
   id: serial("id").primaryKey(),

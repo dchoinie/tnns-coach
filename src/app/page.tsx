@@ -5,7 +5,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Logo from "../../public/logo/fulllogo_transparent_nobuffer.png";
 import TextLogo from "../../public/logo/textonly_nobuffer.png";
-import { SignInButton, SignUp, SignedIn, useUser } from "@clerk/nextjs";
+import { SignInButton, SignUp, useUser } from "@clerk/nextjs";
 import { Button } from "~/components/ui/button";
 import { LogIn, Check, Info } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
@@ -14,10 +14,14 @@ import { useRouter } from "next/navigation";
 export default function HomePage() {
   const router = useRouter();
   const { isSignedIn } = useUser();
-  <>
-    {isSignedIn ? (
-      router.push("/dashboard")
-    ) : (
+
+  console.log(isSignedIn);
+
+  const renderPage = () => {
+    if (isSignedIn) {
+      router.push("/dashboard");
+    }
+    return (
       <main>
         <div className="relative flex">
           <div className="flex h-screen w-1/2 flex-col justify-center p-24">
@@ -67,10 +71,12 @@ export default function HomePage() {
               styles.bgImg,
             )}
           >
-            <SignUp routing="hash" />
+            {/* <SignUp routing="hash" /> */}
           </div>
         </div>
       </main>
-    )}
-  </>;
+    );
+  };
+
+  return <>{renderPage()}</>;
 }

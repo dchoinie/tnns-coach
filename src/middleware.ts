@@ -5,6 +5,7 @@ import { type NextRequest, NextResponse } from "next/server";
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/setup-profile",
+  "/create-organization",
 ]);
 const isSetupProfileRoute = createRouteMatcher(["/setup-profile"]);
 const isPublicRoute = createRouteMatcher(["/"]);

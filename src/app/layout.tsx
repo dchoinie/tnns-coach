@@ -7,9 +7,9 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false; /* eslint-disable import/first */
 import styles from "../styles/loading.module.css";
-import { Nunito_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 
-const nunito = Nunito_Sans({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 });
@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`font-sans ${nunito.variable}`}>
+        <body className={`font-sans ${inter.variable}`}>
           <ClerkLoading>
             <div className="flex h-screen w-full items-center justify-center">
               <span className={styles.loader}>Load&nbsp;ng</span>
