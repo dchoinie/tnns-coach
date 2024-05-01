@@ -6,10 +6,9 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { CreateUser } from "./_actions";
-import { LoaderCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import styles from "../../styles/loading.module.css";
 
 const SetupProfilePage = () => {
   const [error, setError] = useState("");
@@ -21,7 +20,10 @@ const SetupProfilePage = () => {
     return (
       <Button type="submit" aria-disabled={pending}>
         {pending ? (
-          <LoaderCircle className={styles.loadingSpinner} />
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Loading...
+          </>
         ) : (
           "Submit"
         )}

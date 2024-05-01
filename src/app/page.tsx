@@ -50,11 +50,11 @@ export default function HomePage() {
             </div>
             <div className="flex gap-6">
               <SignUpButton mode="modal">
-                <Button variant="default" size="lg">
+                <Button variant="brand" size="lg">
                   <UserPlus size={20} className="mr-2" /> Sign Up
                 </Button>
               </SignUpButton>
-              <Button variant="outline" size="lg">
+              <Button variant="ghost" size="lg">
                 Learn More <Info size={20} className="ml-2" />
               </Button>
             </div>
