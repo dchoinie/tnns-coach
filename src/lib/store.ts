@@ -1,8 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
+import teamsReducer from "./features/teams/reducers";
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {},
+    reducer: {
+      teamsReducer,
+    },
   });
 };
 

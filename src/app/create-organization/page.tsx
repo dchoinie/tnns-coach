@@ -21,32 +21,14 @@ import { useRouter } from "next/navigation";
 import { CreateOrganization, GetOrgs } from "./_actions";
 import styles from "../../styles/loading.module.css";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { type ApiRes } from "~/types/common";
+import { type Team } from "~/types/teams";
 
 const CreateOrganizationPage = () => {
   const [error, setError] = useState("");
   const [level, setLevel] = useState("");
-  const [orgs, setOrgs] = useState([]);
+  const [teams, setTeams] = useState([] as Team[]);
   const { user } = useUser();
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchOrgs = async () => {
-      try {
-        const res: ApiRes = await GetOrgs();
-        if (res?.data) {
-          setOrgs(res.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch organizations:", error);
-        // handle error...
-      }
-    };
-
-    fetchOrgs();
-  }, []);
-
-  console.log(orgs);
 
   const SubmitBtn = (): JSX.Element => {
     const { pending } = useFormStatus();
@@ -80,22 +62,22 @@ const CreateOrganizationPage = () => {
           <h2 className="mb-6 text-3xl">Create or join an organization</h2>
           <p className="mb-6">
             To create a new organization or request to join an existing one,
-            please fill out the appropriate form. If you're creating a new
-            organization, select the "Create New Organization" tab and enter
-            your school name and details in the provided fields. If you wish to
-            join an existing organization, select the "Request To Join Current
-            Organization" tab and follow the instructions. Please ensure all
-            required fields are filled out accurately before submitting your
-            request.
+            please fill out the appropriate form. If you&apos;re creating a new
+            organization, select the &quot;Create New Organization&quot; tab and
+            enter your school name and details in the provided fields. If you
+            wish to join an existing organization, select the &quot;Request To
+            Join Current Organization&quot; tab and follow the instructions.
+            Please ensure all required fields are filled out accurately before
+            submitting your request.
           </p>
           <p className="mb-6">
             To access the features of TNNS Coach, all users must be associated
             with an organization. This allows us to tailor your experience and
-            provide relevant content. However, if you'd like to explore the app
-            before joining or creating an organization, you're welcome to do so.
-            Simply click the button below to proceed. Please note that full
-            functionality will not be available until you're associated with an
-            organization.
+            provide relevant content. However, if you&apos;d like to explore the
+            app before joining or creating an organization, you&apos;re welcome
+            to do so. Simply click the button below to proceed. Please note that
+            full functionality will not be available until you&apos;re
+            associated with an organization.
           </p>
           <Button variant="secondary" className="self-start" size="sm">
             <Link href="/dashboard" className="flex">
@@ -208,11 +190,11 @@ const CreateOrganizationPage = () => {
                   <SelectValue placeholder="Select a timezone" />
                 </SelectTrigger>
                 <SelectContent>
-                  {orgs.map((org) => (
+                  {/* {orgs.map((org) => (
                     <SelectItem key={org.orgName} value={org.orgName}>
                       {org.orgName}
                     </SelectItem>
-                  ))}
+                  ))} */}
                 </SelectContent>
               </Select>
             </TabsContent>

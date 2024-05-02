@@ -4,6 +4,7 @@ import {
   ClerkProvider,
   SignedOut,
 } from "@clerk/nextjs";
+import StoreProvider from "./StoreProvider";
 import "~/styles/globals.css";
 // The following import prevents a Font Awesome icon server-side rendering bug,
 // where the icons flash from a very large icon down to a properly sized one:
@@ -33,25 +34,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`font-sans ${inter.variable}`}>
-          <ClerkLoading>
-            <div className="flex h-screen w-full items-center justify-center">
-              <span className={styles.loader}>Load&nbsp;ng</span>
-            </div>
-          </ClerkLoading>
-          <ClerkLoaded>
-            <SignedOut>
-              <MarketingHeader />
-            </SignedOut>
-            {children}
-            <SignedOut>
-              <MarketingFooter />
-            </SignedOut>
-          </ClerkLoaded>
-        </body>
-      </html>
-    </ClerkProvider>
+    <StoreProvider>
+      <ClerkProvider>
+        <html lang="en">
+          <body className={`font-sans ${inter.variable}`}>
+            <ClerkLoading>
+              <div className="flex h-screen w-full items-center justify-center">
+                <span className={styles.loader}>Load&nbsp;ng</span>
+              </div>
+            </ClerkLoading>
+            <ClerkLoaded>
+              <SignedOut>
+                <MarketingHeader />
+              </SignedOut>
+              {children}
+              <SignedOut>
+                <MarketingFooter />
+              </SignedOut>
+            </ClerkLoaded>
+          </body>
+        </html>
+      </ClerkProvider>
+    </StoreProvider>
   );
 }
