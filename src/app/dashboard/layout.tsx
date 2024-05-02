@@ -2,7 +2,15 @@
 
 import React, { type ReactNode } from "react";
 import Image from "next/image";
-import { Home, School, Trophy, User } from "lucide-react";
+import {
+  Home,
+  School,
+  Trophy,
+  User,
+  Bus,
+  MessageSquare,
+  ClipboardPlus,
+} from "lucide-react";
 import DashboardHeader from "../_components/dashboardHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,7 +19,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Logo from "public/logo/fulllogo_transparent_nobuffer.png";
 import Link from "next/link";
-import Footer from "../_components/footer";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
@@ -27,7 +34,7 @@ const AsideMenuItem = ({ title, icon, path }: AsideMenuItem) => {
     <Link
       href={path}
       className={clsx(
-        "flex cursor-pointer items-center space-x-4 p-4 hover:bg-gray-100",
+        "flex cursor-pointer items-center space-x-4 p-4 text-sm hover:bg-gray-100",
         pathname === path ? "bg-gray-100" : "",
       )}
     >
@@ -40,7 +47,7 @@ const AsideMenuItem = ({ title, icon, path }: AsideMenuItem) => {
 const asideMenu = [
   {
     title: "Home",
-    icon: <Home />,
+    icon: <Home size={17} />,
     path: "/dashboard",
   },
   {
@@ -50,7 +57,7 @@ const asideMenu = [
   },
   {
     title: "Team Management",
-    icon: <School />,
+    icon: <School size={17} />,
     path: "/dashboard/team",
   },
   {
@@ -60,13 +67,28 @@ const asideMenu = [
   },
   {
     title: "Team Matches",
-    icon: <Trophy />,
+    icon: <Trophy size={17} />,
     path: "/dashboard/team-matches",
   },
   {
     title: "Individual Matches",
-    icon: <User />,
+    icon: <User size={17} />,
     path: "/dashboard/individual-matches",
+  },
+  {
+    title: "Site Planning",
+    icon: <Bus size={17} />,
+    path: "/dashboard/site-planning",
+  },
+  {
+    title: "Communication",
+    icon: <MessageSquare size={17} />,
+    path: "/dashboard/communication",
+  },
+  {
+    title: "Reports",
+    icon: <ClipboardPlus size={17} />,
+    path: "/dashboard/reports",
   },
 ];
 
@@ -99,7 +121,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
           {children}
         </div>
       </div>
-      <Footer dashboard />
     </>
   );
 };

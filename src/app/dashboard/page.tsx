@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Card,
@@ -8,59 +10,18 @@ import {
 } from "~/components/ui/card";
 import { buttonVariants } from "~/components/ui/button";
 import Link from "next/link";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+import { useOrganization, useOrganizationList, useUser } from "@clerk/nextjs";
 
-const dashboardPage = () => {
-  return (
-    <div className="grid grid-cols-2 gap-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Coaching Staff</CardTitle>
-          <CardDescription>
-            In the Coaching Staff section, you have the ability to manage
-            users/coaches. This includes tasks such as adding new staff,
-            updating existing member information, assigning roles, and removing
-            individuals from the team.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link
-            className={buttonVariants({ variant: "default" })}
-            href="/dashboard/coaching-staff"
-          >
-            Manage Coaching Staff
-          </Link>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Team Management</CardTitle>
-          <CardDescription></CardDescription>
-        </CardHeader>
-        <CardContent></CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Player Management</CardTitle>
-          <CardDescription></CardDescription>
-        </CardHeader>
-        <CardContent></CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Team Matches</CardTitle>
-          <CardDescription></CardDescription>
-        </CardHeader>
-        <CardContent></CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Individual Matches</CardTitle>
-          <CardDescription></CardDescription>
-        </CardHeader>
-        <CardContent></CardContent>
-      </Card>
-    </div>
-  );
+const DashboardPage = () => {
+  const org = useOrganization();
+  const list = useOrganizationList();
+  const user = useUser();
+  console.log(list);
+  console.log(org);
+  console.log(user);
+
+  return <div></div>;
 };
 
-export default dashboardPage;
+export default DashboardPage;

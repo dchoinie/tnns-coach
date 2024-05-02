@@ -36,7 +36,7 @@ const SetupProfilePage = () => {
 
     if (res?.message) {
       await user?.reload();
-      router.push("/dashboard");
+      router.push("/create-organization");
     }
 
     if (res?.error) {

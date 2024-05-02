@@ -68,11 +68,12 @@ export const teams = createTable("team", {
   id: serial("id").notNull().primaryKey(),
   schoolName: varchar("school_name", { length: 256 }),
   schoolMascot: varchar("school_mascot", { length: 256 }),
-  gender: varchar("gender", { length: 6, enum: ["male", "female"] }),
+  gender: varchar("gender", { length: 256 }),
   conference: varchar("conference", { length: 256 }),
   division: varchar("division", { length: 256 }),
   class: varchar("class", { length: 256 }),
   section: varchar("section", { length: 256 }),
+  clerkOrgId: varchar("clerk_org_id", { length: 256 }),
 });
 
 export const teamsRelations = relations(teams, ({ many }) => ({

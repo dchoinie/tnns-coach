@@ -8,7 +8,12 @@ const isProtectedRoute = createRouteMatcher([
   "/create-organization",
 ]);
 const isSetupProfileRoute = createRouteMatcher(["/setup-profile"]);
-const isPublicRoute = createRouteMatcher(["/"]);
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/pricing",
+  "/integrations",
+  "/company",
+]);
 
 export default clerkMiddleware((auth, req: NextRequest) => {
   if (isProtectedRoute(req)) auth().protect();

@@ -4,10 +4,12 @@ import BrandedSimpleHeader from "../_components/brandedSimpleHeader";
 
 const CreateOrgLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex min-h-screen flex-col justify-between">
+    <div className="flex min-h-screen flex-col">
       <BrandedSimpleHeader />
       {children}
-      <Footer />
+      <div className="absolute bottom-0 w-full">
+        <Footer />
+      </div>
     </div>
   );
 };

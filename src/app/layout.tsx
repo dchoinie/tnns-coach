@@ -1,4 +1,9 @@
-import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
+import {
+  ClerkLoaded,
+  ClerkLoading,
+  ClerkProvider,
+  SignedOut,
+} from "@clerk/nextjs";
 import "~/styles/globals.css";
 // The following import prevents a Font Awesome icon server-side rendering bug,
 // where the icons flash from a very large icon down to a properly sized one:
@@ -37,9 +42,13 @@ export default function RootLayout({
             </div>
           </ClerkLoading>
           <ClerkLoaded>
-            <MarketingHeader />
+            <SignedOut>
+              <MarketingHeader />
+            </SignedOut>
             {children}
-            <MarketingFooter />
+            <SignedOut>
+              <MarketingFooter />
+            </SignedOut>
           </ClerkLoaded>
         </body>
       </html>

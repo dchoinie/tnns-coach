@@ -5,6 +5,21 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { db } from "../../server/db";
 import { teams } from "../../server/db/schema";
 
+export const GetOrgs = async () => {
+  const user = auth();
+
+  if (!user?.userId) {
+    return { message: "No Logged In User" };
+  }
+
+  const orgs = await db.select({ orgName: teams.schoolName }).from(teams);
+  try {
+    return { message: "Orgs fetch successfull", data: orgs };
+  } catch (error) {
+    throw new Error("Could not fetch orgs");
+  }
+};
+
 export const CreateOrganization = async (formData: FormData) => {
   const user = auth();
 
