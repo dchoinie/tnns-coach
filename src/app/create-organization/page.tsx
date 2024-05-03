@@ -14,7 +14,6 @@ import {
   SelectLabel,
 } from "~/components/ui/select";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
 import { Button } from "~/components/ui/button";
 import { ChevronRight, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -22,16 +21,11 @@ import { CreateOrganization, GetOrgs } from "./_actions";
 import styles from "../../styles/loading.module.css";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { type Team } from "~/types/teams";
-import connector, { type Props } from "./_connector";
 
-const CreateOrganizationPage = ({ fetchTeams, teams }: Props) => {
+const CreateOrganizationPage = () => {
   const [error, setError] = useState("");
   const [level, setLevel] = useState("");
   const router = useRouter();
-
-  useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]);
 
   const SubmitBtn = (): JSX.Element => {
     const { pending } = useFormStatus();
@@ -208,4 +202,4 @@ const CreateOrganizationPage = ({ fetchTeams, teams }: Props) => {
   );
 };
 
-export default connector(CreateOrganizationPage);
+export default CreateOrganizationPage;

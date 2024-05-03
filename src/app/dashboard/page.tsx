@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -12,15 +12,15 @@ import { buttonVariants } from "~/components/ui/button";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { useOrganization, useOrganizationList, useUser } from "@clerk/nextjs";
+import { useAppDispatch } from "~/lib/hooks";
+import { fetchTeams } from "~/lib/features/teams/slice";
 
 const DashboardPage = () => {
-  const org = useOrganization();
-  const list = useOrganizationList();
-  const user = useUser();
-  console.log(list);
-  console.log(org);
-  console.log(user);
+  const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    dispatch(fetchTeams()).catch((error) => console.log(error));
+  }, [dispatch]);
   return <div></div>;
 };
 
