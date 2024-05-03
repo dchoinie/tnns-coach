@@ -22,13 +22,16 @@ import { CreateOrganization, GetOrgs } from "./_actions";
 import styles from "../../styles/loading.module.css";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { type Team } from "~/types/teams";
+import connector, { type Props } from "./_connector";
 
-const CreateOrganizationPage = () => {
+const CreateOrganizationPage = ({ fetchTeams, teams }: Props) => {
   const [error, setError] = useState("");
   const [level, setLevel] = useState("");
-  const [teams, setTeams] = useState([] as Team[]);
-  const { user } = useUser();
   const router = useRouter();
+
+  useEffect(() => {
+    fetchTeams();
+  }, [fetchTeams]);
 
   const SubmitBtn = (): JSX.Element => {
     const { pending } = useFormStatus();
@@ -205,4 +208,4 @@ const CreateOrganizationPage = () => {
   );
 };
 
-export default CreateOrganizationPage;
+export default connector(CreateOrganizationPage);

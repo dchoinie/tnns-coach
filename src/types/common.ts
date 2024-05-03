@@ -1,4 +1,6 @@
 import { type schema } from "normalizr";
+import { type ThunkDispatch } from "redux-thunk";
+import { type RootState } from "~/lib/store";
 
 export interface GenericAction<T = unknown> {
   type: string;
@@ -11,7 +13,7 @@ export interface ApiError {
 }
 
 export type ApiAction = {
-  actions: GenericAction[];
+  actions: Function[];
   endpoint: string;
   method?: string;
   schema: schema.Object;

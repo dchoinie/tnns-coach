@@ -4,21 +4,20 @@ import { type TeamActionsType } from "./actions";
 import { combineReducers } from "@reduxjs/toolkit";
 import { type Team, type State } from "~/types/teams";
 
-const initialTeamsState = [] as Team[];
+const initialTeamsState: Team[] = [];
 
 const teamsReducer = (state = initialTeamsState, action: TeamActionsType) => {
   switch (action.type) {
     case actionTypes.FETCH_TEAMS_SUCCESS: {
-      return {
-        ...state,
-        teams: action.payload as Team[],
-      };
+      return action.payload;
     }
+    default:
+      return state;
   }
 };
 
 const initialUIState = {
-  fetchTeamsStatus: FETCH_STATUS.NOT_STARTED,
+  fetchTeamsStatus: FETCH_STATUS.IDLE,
 };
 
 export const uiReducer = (state = initialUIState, action: TeamActionsType) => {
@@ -26,28 +25,23 @@ export const uiReducer = (state = initialUIState, action: TeamActionsType) => {
     case actionTypes.FETCH_TEAMS_REQUEST: {
       return {
         ...state,
-        ui: {
-          fetchTeamsStatus: FETCH_STATUS.IN_PROGRESS,
-        },
+        fetchTeamsStatus: FETCH_STATUS.IN_PROGRESS,
       };
     }
     case actionTypes.FETCH_TEAMS_SUCCESS: {
       return {
         ...state,
-        teams: action.payload,
-        ui: {
-          fetchTeamsStatus: FETCH_STATUS.SUCCESS,
-        },
+        fetchTeamsStatus: FETCH_STATUS.SUCCESS,
       };
     }
     case actionTypes.FETCH_TEAMS_FAILURE: {
       return {
         ...state,
-        ui: {
-          fetchTeamsStatus: FETCH_STATUS.FAILED,
-        },
+        fetchTeamsStatus: FETCH_STATUS.FAILED,
       };
     }
+    default:
+      return state;
   }
 };
 

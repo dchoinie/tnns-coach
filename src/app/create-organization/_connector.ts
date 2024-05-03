@@ -1,7 +1,7 @@
 import { type ConnectedProps, connect } from "react-redux";
 import { type FETCH_STATUS } from "~/enums/common";
 import { teamsOperations, teamsSelectors } from "~/lib/features/teams";
-import { type AppStore } from "~/lib/store";
+import { type RootState } from "~/lib/store";
 import { type Team } from "~/types/teams";
 
 interface StateProps {
@@ -9,7 +9,7 @@ interface StateProps {
   teams: Team[];
 }
 
-const mapStateToProps = (state: AppStore): StateProps => ({
+const mapStateToProps = (state: RootState): StateProps => ({
   fetchTeamsStatus: teamsSelectors.fetchTeamsStatus(state),
   teams: teamsSelectors.teams(state),
 });
