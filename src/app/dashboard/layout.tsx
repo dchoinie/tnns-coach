@@ -65,7 +65,7 @@ const asideMenu = [
   {
     title: "Team Management",
     icon: <School size={17} />,
-    path: "/dashboard/team",
+    path: "/dashboard/teams",
   },
   {
     title: "Player Management",

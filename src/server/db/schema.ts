@@ -57,13 +57,7 @@ export const users = createTable("users", {
   phone: varchar("phone", { length: 256 }),
   dateOfBirth: date("date_of_birth", { mode: "string" }),
   title: varchar("title", { length: 256 }),
-  profileCompleted: boolean("profile_completed"),
-  organizationCompleted: boolean("organization_completed"),
 });
-
-export const usersRelations = relations(users, ({ many }) => ({
-  usersToTeams: many(teams),
-}));
 
 export const teams = createTable("teams", {
   id: serial("id").notNull().primaryKey(),
@@ -81,20 +75,8 @@ export const teams = createTable("teams", {
 });
 
 export const teamsRelations = relations(teams, ({ many }) => ({
-  usersToTeams: many(usersToTeams),
   players: many(players),
 }));
-
-export const usersToTeams = createTable(
-  "users_to_teams",
-  {
-    userId: integer("user_id").references(() => users.id),
-    teamId: integer("team_id").references(() => teams.id),
-  },
-  (t) => ({
-    pk: primaryKey({ columns: [t.userId, t.teamId] }),
-  }),
-);
 
 export const players = createTable("players", {
   id: serial("id").primaryKey(),
