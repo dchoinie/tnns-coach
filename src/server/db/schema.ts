@@ -7,7 +7,6 @@ import {
   integer,
   pgEnum,
   serial,
-  pgTable,
   primaryKey,
   boolean,
 } from "drizzle-orm/pg-core";
@@ -19,6 +18,7 @@ import {
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const createTable = pgTableCreator((name) => `tnns-coach_${name}`);
+
 export const resultEnum = pgEnum("result", ["win", "loss", "tie"]);
 export const positionEnum = pgEnum("position", [
   "1_singles",
@@ -45,8 +45,9 @@ export const matchTypeEnum = pgEnum("match_format", [
   "custom",
 ]);
 
-export const users = createTable("user", {
+export const users = createTable("users", {
   id: serial("id").notNull().primaryKey(),
+  clerkId: varchar("clerk_id", { length: 256 }),
   createdAt: date("created_at")
     .default(sql`CURRENT_DATE`)
     .notNull(),
@@ -64,11 +65,14 @@ export const usersRelations = relations(users, ({ many }) => ({
   usersToTeams: many(teams),
 }));
 
-export const teams = createTable("team", {
+export const teams = createTable("teams", {
   id: serial("id").notNull().primaryKey(),
   schoolName: varchar("school_name", { length: 256 }),
   schoolMascot: varchar("school_mascot", { length: 256 }),
+  city: varchar("city", { length: 256 }),
+  state: varchar("state", { length: 256 }),
   gender: varchar("gender", { length: 256 }),
+  level: varchar("level", { length: 256 }),
   conference: varchar("conference", { length: 256 }),
   division: varchar("division", { length: 256 }),
   class: varchar("class", { length: 256 }),
@@ -81,7 +85,7 @@ export const teamsRelations = relations(teams, ({ many }) => ({
   players: many(players),
 }));
 
-export const usersToTeams = pgTable(
+export const usersToTeams = createTable(
   "users_to_teams",
   {
     userId: integer("user_id").references(() => users.id),
@@ -92,7 +96,7 @@ export const usersToTeams = pgTable(
   }),
 );
 
-export const players = createTable("player", {
+export const players = createTable("players", {
   id: serial("id").primaryKey(),
   createdAt: timestamp("created_at")
     .default(sql`CURRENT_TIMESTAMP`)
@@ -114,7 +118,7 @@ export const playersRelations = relations(players, ({ one }) => ({
   }),
 }));
 
-export const teamMatches = createTable("team_match", {
+export const teamMatches = createTable("team_matches", {
   id: serial("id").primaryKey(),
   date: date("date"),
   matchType: matchTypeEnum("match_type"),
@@ -127,14 +131,14 @@ export const teamMatches = createTable("team_match", {
   result: integer("result").references(() => matchResults.id),
 });
 
-export const matchResults = createTable("match_result", {
+export const matchResults = createTable("match_results", {
   id: serial("id").primaryKey(),
   homeTeamResult: resultEnum("home_team_result"),
   awayTeamResult: resultEnum("away_team_result"),
   score: varchar("score", { length: 256 }),
 });
 
-export const sites = createTable("site", {
+export const sites = createTable("sites", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 256 }),
   address: varchar("address", { length: 256 }),
@@ -144,7 +148,7 @@ export const sites = createTable("site", {
   numberOfCourts: integer("number_of_courts"),
 });
 
-export const singlesMatches = createTable("singles_match", {
+export const singlesMatches = createTable("singles_matches", {
   id: serial("id").primaryKey(),
   homePlayerId: integer("home_player_id").references(() => players.id),
   awayPlayerId: integer("away_player_id").references(() => players.id),
@@ -153,7 +157,7 @@ export const singlesMatches = createTable("singles_match", {
   score: varchar("score", { length: 256 }),
 });
 
-export const doublesMatches = createTable("doubles_match", {
+export const doublesMatches = createTable("doubles_matches", {
   id: serial("id").primaryKey(),
   homeTeamId: integer("home_team_id").references(() => doublesTeams.id),
   awayTeamId: integer("away_team_id").references(() => doublesTeams.id),
@@ -162,7 +166,7 @@ export const doublesMatches = createTable("doubles_match", {
   score: varchar("score", { length: 256 }),
 });
 
-export const doublesTeams = createTable("doubles_team", {
+export const doublesTeams = createTable("doubles_teams", {
   id: serial("id").primaryKey(),
   player_1_id: integer("player_1_id").references(() => players.id),
   player_2_id: integer("player_2_id").references(() => players.id),

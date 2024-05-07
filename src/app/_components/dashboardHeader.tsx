@@ -2,9 +2,9 @@
 
 import React from "react";
 import { usePathname } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Input } from "~/components/ui/input";
-import { Search } from "lucide-react";
+import { DotIcon, Search } from "lucide-react";
 import BreadcrumbComponent from "./breadcrumb";
 
 const DashboardHeader = () => {
@@ -15,6 +15,13 @@ const DashboardHeader = () => {
       <div className="self-center">
         <BreadcrumbComponent pathname={pathname} />
       </div>
+      <OrganizationSwitcher>
+        <OrganizationSwitcher.OrganizationProfileLink
+          label="Homepage"
+          url="/"
+          labelIcon={<DotIcon />}
+        />
+      </OrganizationSwitcher>
       <div className="flex gap-6">
         {/* search */}
         <div className="relative ml-auto flex-1 md:grow-0">

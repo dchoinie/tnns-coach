@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 import { useFormStatus } from "react-dom";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -16,22 +16,42 @@ import {
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { ChevronRight, LoaderCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { CreateOrganization, GetOrgs } from "./_actions";
 import styles from "../../styles/loading.module.css";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { type Team } from "~/types/teams";
+import { useAppDispatch, useAppSelector } from "~/lib/hooks";
+import { fetchTeams, selectTeams } from "~/lib/features/teams/slice";
+import {
+  fetchCurrentUser,
+  selectCurrentUser,
+} from "~/lib/features/users/slice";
+import {
+  collegeCCCAATeams,
+  collegeD1Teams,
+  collegeD2Teams,
+  collegeD3Teams,
+  collegeNAIATeams,
+  collegeNJCAATeams,
+  stateSelect,
+} from "~/helpers/teams";
+import { CreateTeam } from "./_actions";
 
 const CreateOrganizationPage = () => {
   const [error, setError] = useState("");
   const [level, setLevel] = useState("");
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+
+  const teams = useAppSelector(selectTeams);
+
+  useEffect(() => {
+    dispatch(fetchTeams()).catch((error) => console.log(error));
+    dispatch(fetchCurrentUser()).catch((error) => console.log(error));
+  }, [dispatch]);
 
   const SubmitBtn = (): JSX.Element => {
-    const { pending } = useFormStatus();
     return (
-      <Button type="submit" aria-disabled={pending}>
-        {pending ? (
+      <Button type="submit" aria-disabled={isLoading}>
+        {isLoading ? (
           <LoaderCircle className={styles.loadingSpinner} />
         ) : (
           "Submit"
@@ -41,14 +61,14 @@ const CreateOrganizationPage = () => {
   };
 
   const handleSubmit = async (formData: FormData) => {
-    const res = await CreateOrganization(formData);
+    setIsLoading(true);
 
-    if (res?.message) {
-      router.push("/dashboard");
-    }
-
-    if (res?.error) {
-      setError(res?.error);
+    try {
+      await CreateTeam(formData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,7 +114,11 @@ const CreateOrganizationPage = () => {
             <TabsContent value="create">
               <div className="my-12 flex flex-col">
                 {error && <p className="text-red-500">{error}</p>}
-                <form action={handleSubmit} className="flex flex-col">
+                <form
+                  action={handleSubmit}
+                  method="POST"
+                  className="flex flex-col"
+                >
                   <div className="flex gap-12">
                     <div className="mb-10 w-1/2">
                       <Label htmlFor="schoolName">School Name</Label>
@@ -107,8 +131,18 @@ const CreateOrganizationPage = () => {
                   </div>
                   <div className="flex gap-12">
                     <div className="mb-10 w-1/2">
+                      <Label htmlFor="city">City</Label>
+                      <Input required name="city" id="city" />
+                    </div>
+                    <div className="mb-10 w-1/2">
+                      <Label htmlFor="state">State</Label>
+                      {stateSelect()}
+                    </div>
+                  </div>
+                  <div className="flex gap-12">
+                    <div className="mb-10 w-1/2">
                       <Label htmlFor="gender">Gender</Label>
-                      <Select>
+                      <Select id="gender" name="gender">
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Gender" />
                         </SelectTrigger>
@@ -122,6 +156,8 @@ const CreateOrganizationPage = () => {
                       <Label htmlFor="level">Level</Label>
                       <Select
                         onValueChange={(value: string) => setLevel(value)}
+                        id="level"
+                        name="level"
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Level" />
@@ -181,19 +217,24 @@ const CreateOrganizationPage = () => {
                 </form>
               </div>
             </TabsContent>
-            <TabsContent value="join">
+            <TabsContent value="join" className="flex flex-col">
               <Select>
-                <SelectTrigger className="w-[280px]">
-                  <SelectValue placeholder="Select a timezone" />
+                <SelectTrigger className="my-6 w-1/2 self-center">
+                  <SelectValue placeholder="Select a team" />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* {orgs.map((org) => (
-                    <SelectItem key={org.orgName} value={org.orgName}>
-                      {org.orgName}
-                    </SelectItem>
-                  ))} */}
+                  <SelectGroup>
+                    <SelectLabel>College</SelectLabel>
+                    {collegeD1Teams(teams)}
+                    {collegeD2Teams(teams)}
+                    {collegeD3Teams(teams)}
+                    {collegeNAIATeams(teams)}
+                    {collegeNJCAATeams(teams)}
+                    {collegeCCCAATeams(teams)}
+                  </SelectGroup>
                 </SelectContent>
               </Select>
+              <Button>Request To Join</Button>
             </TabsContent>
           </Tabs>
         </div>

@@ -1,15 +1,13 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { buildCreateSlice, asyncThunkCreator } from "@reduxjs/toolkit";
 import teamsReducer from "~/lib/features/teams/slice";
-
-const rootReducer = combineReducers({
-  teams: teamsReducer,
-});
+import currentUserReducer from "~/lib/features/users/slice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      rootReducer,
+      teams: teamsReducer,
+      currentUser: currentUserReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
     devTools: process.env.NODE_ENV !== "production",

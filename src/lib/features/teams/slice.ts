@@ -1,16 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { FETCH_STATUS } from "~/enums/common";
 import { type Team } from "~/types/teams";
-import { buildCreateSlice, asyncThunkCreator } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { createAppSlice } from "~/lib/store";
-
-interface TeamsState {
-  teams: Team[];
-  ui: {
-    fetchTeamsStatus: FETCH_STATUS;
-  };
-}
 
 const initialState = {
   teams: [] as Team[],
@@ -45,11 +36,10 @@ const teamsSlice = createSlice({
       });
   },
   selectors: {
-    selectTeams: (state) => state.teams,
-    selectFetchTeamsStatus: (state) => state.ui.fetchTeamsStatus,
+    selectTeams: (state): Team[] => state.teams,
+    selectFetchTeamsStatus: (state): FETCH_STATUS => state.ui.fetchTeamsStatus,
   },
 });
 
-// export { selectTeams, selectFetchTeamsStatus } = teamsSlice.selectors;
-
+export const { selectTeams, selectFetchTeamsStatus } = teamsSlice.selectors;
 export default teamsSlice.reducer;

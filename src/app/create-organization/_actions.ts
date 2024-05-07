@@ -1,53 +1,56 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 "use server";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { db } from "../../server/db";
-import { teams } from "../../server/db/schema";
+import { teams, usersToTeams, users } from "../../server/db/schema";
+import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 
-export const GetOrgs = async () => {
-  const user = auth();
+export const CreateTeam = async (formData: FormData) => {
+  const { userId } = auth();
 
-  if (!user?.userId) {
-    return { message: "No Logged In User" };
-  }
+  const currentUser = await db
+    .select()
+    .from(users)
+    .where(eq(userId, users.clerkId));
 
-  const orgs = await db.select({ orgName: teams.schoolName }).from(teams);
-  try {
-    return { message: "Orgs fetch successfull", data: orgs };
-  } catch (error) {
-    throw new Error("Could not fetch orgs");
-  }
-};
-
-export const CreateOrganization = async (formData: FormData) => {
-  const user = auth();
-
-  if (!user?.userId) {
+  if (!userId || !currentUser) {
     return { message: "No Logged In User" };
   }
 
   const newTeam = {
     schoolName: formData.get("schoolName") as string,
     schoolMascot: formData.get("schoolMascot") as string,
-    gender: formData.get("gender") as "male" | "female",
+    gender: formData.get("gender") as string,
+    city: formData.get("city") as string,
+    state: formData.get("state") as string,
     conference: formData.get("conference") as string,
+    level: formData.get("level") as string,
     division: formData.get("division") as string,
     class: formData.get("class") as string,
     section: formData.get("section") as string,
   };
 
-  try {
-    await db.insert(teams).values(newTeam).returning();
-    await clerkClient.organizations.createOrganization({
-      name: newTeam.schoolName,
-      createdBy: user.userId,
-    });
+  const createTeam = await db.insert(teams).values(newTeam).returning();
 
-    return {
-      message: "Team created successfully.",
-    };
+  await clerkClient.organizations.createOrganization({
+    name: newTeam.schoolName,
+    createdBy: userId,
+  });
+
+  // const addUserToTeam = {
+  //   userId: currentUser.id as number,
+  //   teamId: createTeam.id as number,
+  // };
+
+  // await db.insert(usersToTeams).values(addUserToTeam);
+
+  try {
+    return NextResponse.json({ message: "Team created" }, { status: 200 });
   } catch (err) {
-    return { error: "There was an error creating the team." };
+    return NextResponse.json({ data: err }, { status: 500 });
+  } finally {
+    redirect("/dashboard")
   }
 };

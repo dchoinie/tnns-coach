@@ -27,6 +27,10 @@ export type NewUser = typeof users.$inferInsert;
 export async function CreateUser(formData: FormData) {
   const user = auth();
 
+  if (!user?.userId) {
+    return { message: "No Logged In User" };
+  }
+
   const newUser = {
     createdAt: new Date().toISOString(),
     firstName: formData.get("firstName") as string,
@@ -35,14 +39,11 @@ export async function CreateUser(formData: FormData) {
     title: formData.get("title") as string,
     email: formData.get("email") as string,
     phone: formData.get("phone") as string,
+    clerkId: user.userId,
   };
 
-  if (!user?.userId) {
-    return { message: "No Logged In User" };
-  }
-
   try {
-    await db.insert(users).values(newUser).returning();
+    await db.insert(users).values(newUser);
     const res = await clerkClient.users.updateUser(user?.userId, {
       publicMetadata: {
         profileComplete: true,

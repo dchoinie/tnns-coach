@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
+"use server";
+
 import { db } from "../../../server/db";
 import { teams } from "../../../server/db/schema";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {

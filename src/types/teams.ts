@@ -3,12 +3,15 @@ import { type FETCH_STATUS } from "~/enums/common";
 export interface Team {
   id: number;
   schoolName: string;
-  schoolMascot: string;
+  schoolMascot?: string;
+  city: string;
+  state: string;
   gender: string;
-  conference: string;
-  division: string;
-  class: string;
-  section: string;
+  level: string;
+  conference?: string;
+  division?: string;
+  class?: string;
+  section?: string;
   clerkOrgId: string;
 }
 
