@@ -10,6 +10,7 @@ import {
   Bus,
   MessageSquare,
   ClipboardPlus,
+  Building2,
 } from "lucide-react";
 import DashboardHeader from "../_components/dashboardHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +22,7 @@ import Logo from "public/logo/fulllogo_transparent_nobuffer.png";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { useUser, useOrganizationList } from "@clerk/nextjs";
 
 interface AsideMenuItem {
   title: string;
@@ -51,10 +53,15 @@ const asideMenu = [
     path: "/dashboard",
   },
   {
-    title: "Coaching Staff",
-    icon: <FontAwesomeIcon icon={faPersonChalkboard} />,
-    path: "/dashboard/coaching-staff",
+    title: "Organization Management",
+    icon: <Building2 size={17} />,
+    path: "/dashboard/organization-profile",
   },
+  // {
+  //   title: "Coaching Staff",
+  //   icon: <FontAwesomeIcon icon={faPersonChalkboard} />,
+  //   path: "/dashboard/coaching-staff",
+  // },
   {
     title: "Team Management",
     icon: <School size={17} />,
@@ -106,7 +113,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
           />
           <hr className="border border-gray-100" />
           <div className="mt-8">
-            {asideMenu.map((item) => (
+            {asideMenu.map((item: AsideMenuItem) => (
               <AsideMenuItem
                 key={item.title}
                 title={item.title}
