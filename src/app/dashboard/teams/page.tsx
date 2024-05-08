@@ -40,6 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { useFormStatus } from "react-dom";
 import { type Team } from "~/types/teams";
 import Link from "next/link";
 import { MousePointerClick, PlusCircle, LoaderCircle } from "lucide-react";
@@ -50,6 +51,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useOrganization } from "@clerk/nextjs";
 import { Input } from "~/components/ui/input";
 import { FETCH_STATUS } from "~/enums/common";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 const createTeamFormSchema = z.object({
   schoolName: z.string().min(2).max(50),
@@ -67,12 +69,11 @@ const TeamsPage = () => {
   const [error, setError] = useState<string>("");
   const [level, setLevel] = useState<string>("");
   const dispatch = useAppDispatch();
+  const { pending } = useFormStatus();
+
   const teams = useAppSelector(selectTeams);
   const fetchTeamsStatus = useAppSelector(selectFetchTeamsStatus);
   const org = useOrganization();
-
-  console.log(level);
-
   const currentOrgId = org?.organization?.id ?? "";
 
   const createTeamForm = useForm<z.infer<typeof createTeamFormSchema>>({
@@ -178,119 +179,171 @@ const TeamsPage = () => {
             <DialogTitle>Create A Team</DialogTitle>
           </DialogHeader>
           <div>
-            <Form {...createTeamForm}>
-              <form
-                onSubmit={createTeamForm.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                <FormField
-                  control={createTeamForm.control}
-                  name="schoolName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>School Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={createTeamForm.control}
-                  name="schoolMascot"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mascot</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={createTeamForm.control}
-                  name="gender"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Gender</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
+            <ScrollArea className="h-[475px]">
+              <Form {...createTeamForm}>
+                <form
+                  action={createTeamForm.handleSubmit(onSubmit)}
+                  method="POST"
+                  // onSubmit={createTeamForm.handleSubmit(onSubmit)}
+                  className="space-y-8 px-3 py-3"
+                >
+                  <FormField
+                    control={createTeamForm.control}
+                    name="schoolName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>School Name</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Gender" />
-                          </SelectTrigger>
+                          <Input {...field} />
                         </FormControl>
-                        <SelectContent>
-                          <SelectItem value="male">Male</SelectItem>
-                          <SelectItem value="female">Female</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={createTeamForm.control}
-                  name="level"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Level</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={createTeamForm.control}
+                    name="schoolMascot"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mascot</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Level" />
-                          </SelectTrigger>
+                          <Input {...field} />
                         </FormControl>
-                        <SelectContent>
-                          <SelectItem value="highSchool">
-                            High School
-                          </SelectItem>
-                          <SelectItem value="college">College</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={createTeamForm.control}
+                    name="gender"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Gender</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Gender" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="female">Female</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={createTeamForm.control}
+                    name="level"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Level</FormLabel>
+                        <Select
+                          onValueChange={(value: string) => {
+                            setLevel(value);
+                            field.onChange(value);
+                          }}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Level" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="highSchool">
+                              High School
+                            </SelectItem>
+                            <SelectItem value="college">College</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {level === "highSchool" && (
+                    <>
+                      <FormField
+                        control={createTeamForm.control}
+                        name="class"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Class</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={createTeamForm.control}
+                        name="section"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Section</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
                   )}
-                />
-                {level === "highSchool" && (
-                  <>
-                    <FormField
-                      control={createTeamForm.control}
-                      name="class"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Class</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={createTeamForm.control}
-                      name="section"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Section</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
-              </form>
-            </Form>
+                  {level === "college" && (
+                    <>
+                      <FormField
+                        control={createTeamForm.control}
+                        name="division"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Division</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a division" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="DI">DI</SelectItem>
+                                <SelectItem value="DII">DII</SelectItem>
+                                <SelectItem value="DIII">DIII</SelectItem>
+                                <SelectItem value="NAIA">NAIA</SelectItem>
+                                <SelectItem value="NJCAA">NJCAA</SelectItem>
+                                <SelectItem value="CCCAA">CCCAA</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={createTeamForm.control}
+                        name="conference"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Conference</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
+                </form>
+              </Form>
+            </ScrollArea>
           </div>
           <DialogFooter>
             <Button type="submit">Save changes</Button>

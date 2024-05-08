@@ -3,7 +3,7 @@ import React from "react";
 
 const OrganizationProfilePage = () => {
   return (
-    <div>
+    <div className="flex justify-center">
       <OrganizationProfile />
     </div>
   );
