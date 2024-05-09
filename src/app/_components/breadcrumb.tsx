@@ -10,17 +10,21 @@ import Link from "next/link";
 
 const BreadcrumbComponent = ({ pathname }: { pathname: string }) => {
   const paths = pathname.split("/").filter((path) => path !== "");
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
         {paths.map((path: string, i: number) => (
           <BreadcrumbItem key={`${i}.${path}`}>
             <BreadcrumbLink>
-              <Link className="capitalize" href={path}>
+              <Link
+                className="capitalize"
+                href={`/${paths.slice(0, i + 1).join("/")}`}
+              >
                 {path}
               </Link>
             </BreadcrumbLink>
-            <BreadcrumbSeparator />
+            {i < paths.length - 1 && <BreadcrumbSeparator />}
           </BreadcrumbItem>
         ))}
       </BreadcrumbList>

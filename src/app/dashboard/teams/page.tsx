@@ -40,9 +40,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import { type Team } from "~/types/teams";
-import Link from "next/link";
-import { MousePointerClick, PlusCircle, LoaderCircle } from "lucide-react";
+import {
+  MousePointerClick,
+  PlusCircle,
+  LoaderCircle,
+  Pencil,
+  Users,
+} from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -54,6 +67,7 @@ import { useFormStatus } from "react-dom";
 import { createTeam } from "./_actions";
 import { useFormState } from "react-dom";
 import { stateSelect } from "~/helpers/teams";
+import Link from "next/link";
 
 const createTeamFormSchema = z.object({
   schoolName: z.string().min(2).max(50),
@@ -113,7 +127,54 @@ const TeamsPage = () => {
 
   return (
     <div>
-      <Table className="bg-white">
+      <div className="flex flex-col">
+        <h3 className="mb-6 text-2xl">Managed Teams</h3>
+        <div>
+          {fetchTeamsStatus === FETCH_STATUS.IN_PROGRESS ? (
+            <>
+              <LoaderCircle className="animate-spin" />
+            </>
+          ) : (
+            <div className="grid grid-cols-3 gap-12">
+              {teams.map((team: Team) => (
+                <Card key={team.id}>
+                  <CardHeader>
+                    <CardTitle>{team.schoolName}</CardTitle>
+                    <CardDescription>{team.schoolMascot}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p>{`Class: ${team.class}`}</p>
+                    <p>{`Section: ${team.section}`}</p>
+                  </CardContent>
+                  <CardFooter>
+                    <div className="flex gap-6">
+                      <Button variant="secondary" size="sm" asChild>
+                        <Link
+                          href={`/dashboard/teams/${team.id}`}
+                          className="flex"
+                        >
+                          <Pencil size={17} className="mr-2" />
+                          <span>Edit</span>
+                        </Link>
+                      </Button>
+                      <Button size="sm" variant="outline" asChild>
+                        <Link
+                          href={`/dashboard/teams/${team.id}/players`}
+                          className="flex"
+                        >
+                          <Users size={17} className="mr-2" />
+                          <span>View Players</span>
+                        </Link>
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      {/* <Table className="bg-white">
         <TableHeader>
           <TableRow>
             <TableHead>Team Name</TableHead>
@@ -179,7 +240,7 @@ const TeamsPage = () => {
             </>
           )}
         </TableBody>
-      </Table>
+      </Table> */}
       <Dialog>
         <DialogTrigger asChild>
           <Button className="absolute bottom-10 right-10 h-12 rounded-full">
