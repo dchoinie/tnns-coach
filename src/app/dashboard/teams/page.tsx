@@ -40,7 +40,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { useFormStatus } from "react-dom";
 import { type Team } from "~/types/teams";
 import Link from "next/link";
 import { MousePointerClick, PlusCircle, LoaderCircle } from "lucide-react";
@@ -48,56 +47,69 @@ import { Button } from "~/components/ui/button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useOrganization } from "@clerk/nextjs";
 import { Input } from "~/components/ui/input";
 import { FETCH_STATUS } from "~/enums/common";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { useFormStatus } from "react-dom";
+import { createTeam } from "./_actions";
+import { useFormState } from "react-dom";
+import { stateSelect } from "~/helpers/teams";
 
 const createTeamFormSchema = z.object({
   schoolName: z.string().min(2).max(50),
   schoolMascot: z.string().min(2).max(50),
+  city: z.string().min(2).max(50),
+  state: z.string().min(2).max(2),
   gender: z.string().min(2).max(50),
   level: z.string().min(2).max(50),
-  class: z.string().min(2).max(50),
-  section: z.string().min(2).max(50),
-  division: z.string().min(2).max(50),
-  conference: z.string().min(2).max(50),
-  clerkOrgId: z.string().min(2).max(50),
+  class: z.string().min(1).max(50),
+  section: z.string().min(1).max(50),
+  division: z.string().min(1).max(50),
+  conference: z.string().min(1).max(50),
 });
+
+interface SubmitButtonProps {
+  label: string;
+  loading: React.ReactNode;
+}
+
+const SubmitButton = ({ label, loading }: SubmitButtonProps) => {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button disabled={pending} type="submit">
+      {pending ? loading : label}
+    </Button>
+  );
+};
 
 const TeamsPage = () => {
   const [error, setError] = useState<string>("");
   const [level, setLevel] = useState<string>("");
   const dispatch = useAppDispatch();
-  const { pending } = useFormStatus();
 
   const teams = useAppSelector(selectTeams);
   const fetchTeamsStatus = useAppSelector(selectFetchTeamsStatus);
-  const org = useOrganization();
-  const currentOrgId = org?.organization?.id ?? "";
 
   const createTeamForm = useForm<z.infer<typeof createTeamFormSchema>>({
     resolver: zodResolver(createTeamFormSchema),
     defaultValues: {
       schoolName: "",
       schoolMascot: "",
+      city: "",
+      state: "",
       gender: "",
       level: "",
       class: "",
       section: "",
       division: "",
       conference: "",
-      clerkOrgId: currentOrgId,
     },
   });
 
   useEffect(() => {
     dispatch(fetchTeams()).catch((err) => setError("Error fetching teams"));
   }, [dispatch]);
-
-  const onSubmit = (values: z.infer<typeof createTeamFormSchema>) => {
-    console.log(values);
-  };
 
   return (
     <div>
@@ -182,10 +194,10 @@ const TeamsPage = () => {
             <ScrollArea className="h-[475px]">
               <Form {...createTeamForm}>
                 <form
-                  action={createTeamForm.handleSubmit(onSubmit)}
-                  method="POST"
-                  // onSubmit={createTeamForm.handleSubmit(onSubmit)}
                   className="space-y-8 px-3 py-3"
+                  action={createTeam}
+                  method="post"
+                  // onSubmit={createTeamForm.handleSubmit(onSubmit)}
                 >
                   <FormField
                     control={createTeamForm.control}
@@ -215,6 +227,30 @@ const TeamsPage = () => {
                   />
                   <FormField
                     control={createTeamForm.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={createTeamForm.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>State</FormLabel>
+                        <FormControl>{stateSelect()}</FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={createTeamForm.control}
                     name="gender"
                     render={({ field }) => (
                       <FormItem>
@@ -222,6 +258,7 @@ const TeamsPage = () => {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
+                          name="gender"
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -249,6 +286,7 @@ const TeamsPage = () => {
                             field.onChange(value);
                           }}
                           defaultValue={field.value}
+                          name="level"
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -307,6 +345,7 @@ const TeamsPage = () => {
                             <Select
                               onValueChange={field.onChange}
                               defaultValue={field.value}
+                              name="division"
                             >
                               <FormControl>
                                 <SelectTrigger>
@@ -341,13 +380,18 @@ const TeamsPage = () => {
                       />
                     </>
                   )}
+                  <SubmitButton
+                    label="Save Team"
+                    loading={
+                      <div className="flex">
+                        <LoaderCircle className="mr-2 animate-spin" /> Saving
+                      </div>
+                    }
+                  />
                 </form>
               </Form>
             </ScrollArea>
           </div>
-          <DialogFooter>
-            <Button type="submit">Save changes</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

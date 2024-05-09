@@ -130,7 +130,7 @@ const states = [
 
 export const stateSelect = (): JSX.Element => {
   return (
-    <Select id="state" name="state">
+    <Select name="state">
       <SelectTrigger>
         <SelectValue placeholder="Select a state" />
       </SelectTrigger>
