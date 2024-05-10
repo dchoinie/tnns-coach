@@ -8,14 +8,6 @@ import {
 } from "~/lib/features/teams/slice";
 import { useAppDispatch, useAppSelector } from "~/lib/hooks";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -49,13 +41,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { type Team } from "~/types/teams";
-import {
-  MousePointerClick,
-  PlusCircle,
-  LoaderCircle,
-  Pencil,
-  Users,
-} from "lucide-react";
+import { PlusCircle, LoaderCircle, Pencil, Users } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -68,6 +54,7 @@ import { createTeam } from "./_actions";
 import { useFormState } from "react-dom";
 import { stateSelect } from "~/helpers/teams";
 import Link from "next/link";
+import PageTitle from "~/app/_components/pageTitle";
 
 const createTeamFormSchema = z.object({
   schoolName: z.string().min(2).max(50),
@@ -128,7 +115,7 @@ const TeamsPage = () => {
   return (
     <div>
       <div className="flex flex-col">
-        <h3 className="mb-6 text-2xl">Managed Teams</h3>
+        <PageTitle title="Managed Teams" />
         <div>
           {fetchTeamsStatus === FETCH_STATUS.IN_PROGRESS ? (
             <>
@@ -174,73 +161,6 @@ const TeamsPage = () => {
           )}
         </div>
       </div>
-      {/* <Table className="bg-white">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Team Name</TableHead>
-            <TableHead>Mascot</TableHead>
-            <TableHead>Gender</TableHead>
-            <TableHead>Level</TableHead>
-            <TableHead>Class</TableHead>
-            <TableHead>Section</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {fetchTeamsStatus === FETCH_STATUS.IN_PROGRESS ? (
-            <TableRow>
-              <TableCell className="flex">
-                <span>loading</span>
-                <LoaderCircle className="ml-2 animate-spin repeat-infinite" />
-              </TableCell>
-            </TableRow>
-          ) : (
-            <>
-              {teams.length > 0 ? (
-                <>
-                  {teams.map((team: Team) => (
-                    <TableRow key={team.id}>
-                      <TableCell className="text-brand underline">
-                        <Link
-                          href={`/dashboard/teams/${team.id}`}
-                          className="flex"
-                        >
-                          <span>{team.schoolName}</span>
-                          <MousePointerClick className="ml-2" />
-                        </Link>
-                      </TableCell>
-                      <TableCell>{team.schoolMascot}</TableCell>
-                      <TableCell className="capitalize">
-                        {team.gender}
-                      </TableCell>
-                      <TableCell className="capitalize">{team.level}</TableCell>
-                      {team.level === "highSchool" && (
-                        <>
-                          <TableCell>{team.class}</TableCell>
-                          <TableCell>{team.section}</TableCell>
-                        </>
-                      )}
-                      {team.level === "college" && (
-                        <>
-                          <TableCell>{team.division}</TableCell>
-                          <TableCell>{team.conference}</TableCell>
-                        </>
-                      )}
-                    </TableRow>
-                  ))}
-                </>
-              ) : (
-                <>
-                  <TableRow>
-                    <TableCell className="text-center" colSpan={6}>
-                      No teams found, please click below to create one
-                    </TableCell>
-                  </TableRow>
-                </>
-              )}
-            </>
-          )}
-        </TableBody>
-      </Table> */}
       <Dialog>
         <DialogTrigger asChild>
           <Button className="absolute bottom-10 right-10 h-12 rounded-full">
@@ -258,7 +178,6 @@ const TeamsPage = () => {
                   className="space-y-8 px-3 py-3"
                   action={createTeam}
                   method="post"
-                  // onSubmit={createTeamForm.handleSubmit(onSubmit)}
                 >
                   <FormField
                     control={createTeamForm.control}

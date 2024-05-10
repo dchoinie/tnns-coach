@@ -104,19 +104,12 @@ export const teamMatches = createTable("team_matches", {
   id: serial("id").primaryKey(),
   date: date("date"),
   matchType: matchTypeEnum("match_type"),
-  homeTeamId: integer("home_team_id").references(() => teams.id),
-  awayTeamId: integer("away_team_id").references(() => teams.id),
+  opponentTeamName: varchar("opponent_team_name", { length: 256 }),
   location: integer("location").references(() => sites.id),
   matches: integer("matches").references(
     () => doublesMatches.id || singlesMatches.id,
   ),
-  result: integer("result").references(() => matchResults.id),
-});
-
-export const matchResults = createTable("match_results", {
-  id: serial("id").primaryKey(),
-  homeTeamResult: resultEnum("home_team_result"),
-  awayTeamResult: resultEnum("away_team_result"),
+  result: varchar("result", { length: 256 }),
   score: varchar("score", { length: 256 }),
 });
 

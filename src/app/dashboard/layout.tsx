@@ -11,6 +11,7 @@ import {
   MessageSquare,
   ClipboardPlus,
   Building2,
+  Users,
 } from "lucide-react";
 import DashboardHeader from "../_components/dashboardHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -69,7 +70,7 @@ const asideMenu = [
   },
   {
     title: "Player Management",
-    icon: <FontAwesomeIcon icon={faPeopleGroup} />,
+    icon: <Users size={17} />,
     path: "/dashboard/players",
   },
   {
