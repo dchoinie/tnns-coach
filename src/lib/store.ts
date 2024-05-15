@@ -3,6 +3,7 @@ import { buildCreateSlice, asyncThunkCreator } from "@reduxjs/toolkit";
 import teamsReducer from "~/lib/features/teams/slice";
 import teamReducer from "~/lib/features/team/slice";
 import currentUserReducer from "~/lib/features/users/slice";
+import playersReducer from "~/lib/features/players/slice";
 
 export const makeStore = () => {
   return configureStore({
@@ -10,6 +11,7 @@ export const makeStore = () => {
       teams: teamsReducer,
       currentUser: currentUserReducer,
       team: teamReducer,
+      players: playersReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
     devTools: process.env.NODE_ENV !== "production",

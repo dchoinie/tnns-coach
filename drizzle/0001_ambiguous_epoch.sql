@@ -1,0 +1,1 @@
+ALTER TABLE "tnns-coach_players" ALTER COLUMN "utr_rating" SET DATA TYPE real;

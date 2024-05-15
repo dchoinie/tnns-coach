@@ -83,7 +83,7 @@ const demoMatches = [
 const TeamPage = ({ params }: { params: { teamId: number } }) => {
   const dispatch = useAppDispatch();
   const [error, setError] = useState<string>("");
-  const [formEnabled, setFormEnables] = useState<boolean>(false);
+  const [formEnabled, setFormEnabled] = useState<boolean>(false);
   const { teamId } = params;
 
   const team = useAppSelector(selectTeam);
@@ -115,7 +115,7 @@ const TeamPage = ({ params }: { params: { teamId: number } }) => {
     const { pending } = useFormStatus();
 
     return (
-      <Button disabled={pending} type="submit">
+      <Button disabled={pending || !formEnabled} type="submit">
         {pending ? loading : label}
       </Button>
     );
@@ -137,14 +137,25 @@ const TeamPage = ({ params }: { params: { teamId: number } }) => {
 
   return (
     <div>
-      <PageTitle title="Manage Team" />
+      <PageTitle
+        title="Manage Team"
+        subTitle="Click edit to modify team details"
+      />
       <div className="grid grid-cols-2 gap-12">
         <Form {...createTeamForm}>
           <form
-            className="space-y-8 px-3 py-3"
+            className="flex flex-col space-y-8 px-3 py-3"
             // action={createTeam}
-            method="post"
+            // method="post"
           >
+            <Button
+              variant="secondary"
+              size="sm"
+              className="self-end"
+              onClick={() => setFormEnabled(!formEnabled)}
+            >
+              Edit <Pencil size={17} className="ml-2" />
+            </Button>
             <FormField
               control={createTeamForm.control}
               name="schoolName"

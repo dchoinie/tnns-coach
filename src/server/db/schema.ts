@@ -9,6 +9,7 @@ import {
   serial,
   primaryKey,
   boolean,
+  real,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -88,7 +89,7 @@ export const players = createTable("players", {
   nickname: varchar("nickname", { length: 256 }),
   dateOfBirth: date("date_of_birth"),
   gender: varchar("gender", { length: 6, enum: ["male", "female"] }),
-  utrRating: integer("utr_rating"),
+  utrRating: real("utr_rating"),
   status: varchar("status", { length: 8, enum: ["active", "inactive"] }),
   teamId: integer("team_id").references(() => teams.id),
 });
@@ -125,19 +126,17 @@ export const sites = createTable("sites", {
 
 export const singlesMatches = createTable("singles_matches", {
   id: serial("id").primaryKey(),
-  homePlayerId: integer("home_player_id").references(() => players.id),
-  awayPlayerId: integer("away_player_id").references(() => players.id),
-  homePlayerResult: resultEnum("home_player_result"),
-  awayPlayerResult: resultEnum("away_player_result"),
+  playerId: integer("home_player_id").references(() => players.id),
+  opponentName: varchar("opponent_name", { length: 256 }),
+  result: resultEnum("result"),
   score: varchar("score", { length: 256 }),
 });
 
 export const doublesMatches = createTable("doubles_matches", {
   id: serial("id").primaryKey(),
-  homeTeamId: integer("home_team_id").references(() => doublesTeams.id),
-  awayTeamId: integer("away_team_id").references(() => doublesTeams.id),
-  homeTeamResult: resultEnum("home_team_result"),
-  awayTeamResult: resultEnum("away_team_result"),
+  teamId: integer("home_team_id").references(() => doublesTeams.id),
+  awayTeamNames: varchar("away_team_names", { length: 256 }),
+  result: resultEnum("result"),
   score: varchar("score", { length: 256 }),
 });
 

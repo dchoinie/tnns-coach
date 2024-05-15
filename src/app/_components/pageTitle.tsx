@@ -11,7 +11,7 @@ const PageTitle = ({ title, subTitle }: Props) => {
       <h3 className="text-2xl">{title}</h3>
       {typeof subTitle === "string" ? (
         <>
-          <h6>{subTitle}</h6>
+          <h6 className="text-muted-foreground">{subTitle}</h6>
         </>
       ) : (
         <>{subTitle}</>

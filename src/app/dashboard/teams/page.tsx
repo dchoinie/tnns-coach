@@ -113,15 +113,230 @@ const TeamsPage = () => {
   }, [dispatch]);
 
   return (
-    <div>
-      <div className="flex flex-col">
+    <>
+      <div className="flex justify-between">
         <PageTitle title="Managed Teams" />
-        <div>
-          {fetchTeamsStatus === FETCH_STATUS.IN_PROGRESS ? (
-            <>
-              <LoaderCircle className="animate-spin" />
-            </>
-          ) : (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size="sm">
+              <PlusCircle size={17} className="mr-2" /> Add New
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create A Team</DialogTitle>
+            </DialogHeader>
+            <div>
+              <ScrollArea className="h-[475px]">
+                <Form {...createTeamForm}>
+                  <form
+                    className="space-y-8 px-3 py-3"
+                    action={createTeam}
+                    method="post"
+                  >
+                    <FormField
+                      control={createTeamForm.control}
+                      name="schoolName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>School Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createTeamForm.control}
+                      name="schoolMascot"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mascot</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createTeamForm.control}
+                      name="city"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>City</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createTeamForm.control}
+                      name="state"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>State</FormLabel>
+                          <FormControl>{stateSelect()}</FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createTeamForm.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Gender</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            name="gender"
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Gender" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="male">Male</SelectItem>
+                              <SelectItem value="female">Female</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createTeamForm.control}
+                      name="level"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Level</FormLabel>
+                          <Select
+                            onValueChange={(value: string) => {
+                              setLevel(value);
+                              field.onChange(value);
+                            }}
+                            defaultValue={field.value}
+                            name="level"
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Level" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="highSchool">
+                                High School
+                              </SelectItem>
+                              <SelectItem value="college">College</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {level === "highSchool" && (
+                      <>
+                        <FormField
+                          control={createTeamForm.control}
+                          name="class"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Class</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={createTeamForm.control}
+                          name="section"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Section</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </>
+                    )}
+                    {level === "college" && (
+                      <>
+                        <FormField
+                          control={createTeamForm.control}
+                          name="division"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Division</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                name="division"
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select a division" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="DI">DI</SelectItem>
+                                  <SelectItem value="DII">DII</SelectItem>
+                                  <SelectItem value="DIII">DIII</SelectItem>
+                                  <SelectItem value="NAIA">NAIA</SelectItem>
+                                  <SelectItem value="NJCAA">NJCAA</SelectItem>
+                                  <SelectItem value="CCCAA">CCCAA</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={createTeamForm.control}
+                          name="conference"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Conference</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </>
+                    )}
+                    <SubmitButton
+                      label="Save Team"
+                      loading={
+                        <div className="flex">
+                          <LoaderCircle className="mr-2 animate-spin" /> Saving
+                        </div>
+                      }
+                    />
+                  </form>
+                </Form>
+              </ScrollArea>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div>
+        {fetchTeamsStatus === FETCH_STATUS.IN_PROGRESS ? (
+          <>
+            <LoaderCircle className="animate-spin" />
+          </>
+        ) : (
+          <>
             <div className="grid grid-cols-3 gap-12">
               {teams.map((team: Team) => (
                 <Card key={team.id}>
@@ -135,7 +350,7 @@ const TeamsPage = () => {
                   </CardContent>
                   <CardFooter>
                     <div className="flex gap-6">
-                      <Button variant="secondary" size="sm" asChild>
+                      <Button variant="default" size="sm" asChild>
                         <Link
                           href={`/dashboard/teams/${team.id}`}
                           className="flex"
@@ -144,7 +359,7 @@ const TeamsPage = () => {
                           <span>Edit</span>
                         </Link>
                       </Button>
-                      <Button size="sm" variant="outline" asChild>
+                      <Button size="sm" variant="secondary" asChild>
                         <Link
                           href={`/dashboard/teams/${team.id}/players`}
                           className="flex"
@@ -158,223 +373,10 @@ const TeamsPage = () => {
                 </Card>
               ))}
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="absolute bottom-10 right-10 h-12 rounded-full">
-            <PlusCircle size={20} />
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create A Team</DialogTitle>
-          </DialogHeader>
-          <div>
-            <ScrollArea className="h-[475px]">
-              <Form {...createTeamForm}>
-                <form
-                  className="space-y-8 px-3 py-3"
-                  action={createTeam}
-                  method="post"
-                >
-                  <FormField
-                    control={createTeamForm.control}
-                    name="schoolName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>School Name</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createTeamForm.control}
-                    name="schoolMascot"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Mascot</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createTeamForm.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>City</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createTeamForm.control}
-                    name="state"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>State</FormLabel>
-                        <FormControl>{stateSelect()}</FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createTeamForm.control}
-                    name="gender"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Gender</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          name="gender"
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Gender" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="male">Male</SelectItem>
-                            <SelectItem value="female">Female</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createTeamForm.control}
-                    name="level"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Level</FormLabel>
-                        <Select
-                          onValueChange={(value: string) => {
-                            setLevel(value);
-                            field.onChange(value);
-                          }}
-                          defaultValue={field.value}
-                          name="level"
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Level" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="highSchool">
-                              High School
-                            </SelectItem>
-                            <SelectItem value="college">College</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {level === "highSchool" && (
-                    <>
-                      <FormField
-                        control={createTeamForm.control}
-                        name="class"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Class</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={createTeamForm.control}
-                        name="section"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Section</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </>
-                  )}
-                  {level === "college" && (
-                    <>
-                      <FormField
-                        control={createTeamForm.control}
-                        name="division"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Division</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              name="division"
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select a division" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="DI">DI</SelectItem>
-                                <SelectItem value="DII">DII</SelectItem>
-                                <SelectItem value="DIII">DIII</SelectItem>
-                                <SelectItem value="NAIA">NAIA</SelectItem>
-                                <SelectItem value="NJCAA">NJCAA</SelectItem>
-                                <SelectItem value="CCCAA">CCCAA</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={createTeamForm.control}
-                        name="conference"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Conference</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </>
-                  )}
-                  <SubmitButton
-                    label="Save Team"
-                    loading={
-                      <div className="flex">
-                        <LoaderCircle className="mr-2 animate-spin" /> Saving
-                      </div>
-                    }
-                  />
-                </form>
-              </Form>
-            </ScrollArea>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+    </>
   );
 };
 

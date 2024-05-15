@@ -14,11 +14,6 @@ import {
   Users,
 } from "lucide-react";
 import DashboardHeader from "../_components/dashboardHeader";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPersonChalkboard,
-  faPeopleGroup,
-} from "@fortawesome/free-solid-svg-icons";
 import Logo from "public/logo/fulllogo_transparent_nobuffer.png";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -58,11 +53,6 @@ const asideMenu = [
     icon: <Building2 size={17} />,
     path: "/dashboard/organization-profile",
   },
-  // {
-  //   title: "Coaching Staff",
-  //   icon: <FontAwesomeIcon icon={faPersonChalkboard} />,
-  //   path: "/dashboard/coaching-staff",
-  // },
   {
     title: "Team Management",
     icon: <School size={17} />,
